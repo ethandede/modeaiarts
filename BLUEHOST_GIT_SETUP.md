@@ -1,19 +1,40 @@
-# 🚀 Bluehost Git Integration Setup
+# 🚀 Bluehost cPanel Git Integration Setup
+
+## Requirements ✅
+
+Your repository now includes the required `.cpanel.yml` file for Bluehost deployment!
+
+**Bluehost Requirements:**
+- ✅ Valid `.cpanel.yml` file in top-level directory
+- ✅ One or more branches (main branch ready)
+- ✅ Clean working tree
 
 ## Step 1: Enable Git in Bluehost cPanel
 
 1. **Login to Bluehost cPanel**
-2. **Find "Git Version Control" or "Git Integration"** (usually under Developer Tools)
-3. **Click on Git Version Control**
+2. **Find "Git Version Control"** (under Files section)
+3. **Click on "Git Version Control"**
 
 ## Step 2: Create Git Repository
 
 1. **Click "Create Repository"**
 2. **Fill in the details:**
-   - **Repository Path:** `public_html` (or `public_html/wp-content/themes/ai-portraits` for theme-only)
+   - **Repository Path:** `public_html` (for full site deployment)
    - **Repository URL:** `https://github.com/ethandede/modeaiarts.git`
    - **Branch:** `main`
    - **Repository Name:** `modeaiarts`
+
+## Step 3: Choose Deployment Method
+
+### Option A: Automatic Deployment (Recommended)
+- **Push changes** to GitHub main branch
+- **Bluehost automatically deploys** via post-receive hook
+- **Changes go live immediately**
+
+### Option B: Manual Deployment  
+- **Push changes** to GitHub
+- **Click "Update from Remote"** in Bluehost Git interface
+- **Click "Deploy HEAD Commit"** to deploy changes
 
 ## Step 3: Configure Deployment
 
