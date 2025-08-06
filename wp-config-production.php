@@ -9,7 +9,7 @@
 // ** Database settings - Bluehost configuration ** //
 define( 'DB_NAME', 'ezfjslmy_WPIDO' );
 define( 'DB_USER', 'ezfjslmy_WPIDO' );
-define( 'DB_PASSWORD', 'a.DNOdL2qj^Dz{rFi' );
+define( 'DB_PASSWORD', 'tV%rP8$AYw4@&mUWa6YWqj' );
 define( 'DB_HOST', 'localhost' ); // Try localhost first, may need server IP
 define( 'DB_CHARSET', 'utf8' );
 define( 'DB_COLLATE', '' );
