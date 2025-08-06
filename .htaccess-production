@@ -1,0 +1,118 @@
+# AI Portraits WordPress Site - Production .htaccess
+# This file will be renamed to .htaccess on the production server
+
+# BEGIN WordPress
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+# END WordPress
+
+# Security Headers
+<IfModule mod_headers.c>
+    # Prevent clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+    
+    # XSS Protection
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Content Type Options
+    Header always set X-Content-Type-Options "nosniff"
+    
+    # Referrer Policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Content Security Policy (adjust as needed)
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://googleads.g.doubleclick.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; media-src 'self'; object-src 'none'; frame-src 'self' https://www.google.com; connect-src 'self' https://www.google-analytics.com;"
+</IfModule>
+
+# Force HTTPS
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# Gzip Compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+</IfModule>
+
+# Browser Caching
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/pdf "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/x-javascript "access plus 1 month"
+    ExpiresByType application/x-shockwave-flash "access plus 1 month"
+    ExpiresByType image/x-icon "access plus 1 year"
+    ExpiresDefault "access plus 2 days"
+</IfModule>
+
+# Block access to sensitive files
+<FilesMatch "^(wp-config\.php|\.htaccess|\.htpasswd|\.env)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Block access to theme files that shouldn't be directly accessed
+<FilesMatch "\.(php|inc)$">
+    <IfModule mod_rewrite.c>
+        RewriteEngine On
+        RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /wp-content/themes/[^\ ]*\.php[?\ ]
+        RewriteRule ^.*$ - [R=404,L]
+    </IfModule>
+</FilesMatch>
+
+# Protect against SQL injection
+<IfModule mod_rewrite.c>
+    RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
+    RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2}) [OR]
+    RewriteCond %{QUERY_STRING} (\<|%3C)([^s]*s)+cript.*(\>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} (\<|%3C).*iframe.*(\>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} (<|%3C)([^s]*s)+cript.*(>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} (<|%3C).*object.*(>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} (<|%3C).*embed.*(>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} (<|%3C).*marquee.*(>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} (<|%3C).*meta.*(>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} \.\.\/ [OR]
+    RewriteCond %{QUERY_STRING} boot\.ini [NC,OR]
+    RewriteCond %{QUERY_STRING} tag\= [NC]
+    RewriteRule .* - [F]
+</IfModule>
+
+# Optimize for AI Portrait images
+<IfModule mod_rewrite.c>
+    # Custom sitemap for AI portraits
+    RewriteRule ^portraits-sitemap\.xml$ /index.php?ai_portraits_sitemap=1 [L]
+</IfModule>
+
+# File upload security
+<FilesMatch "\.(php|phtml|php3|php4|php5|pl|py|jsp|asp|sh|cgi)$">
+    <IfModule mod_rewrite.c>
+        RewriteCond %{REQUEST_URI} !^/wp-admin/
+        RewriteCond %{REQUEST_URI} !^/wp-includes/
+        RewriteCond %{REQUEST_FILENAME} -f
+        RewriteRule ^wp-content/uploads/.*$ - [R=404,L]
+    </IfModule>
+</FilesMatch>

@@ -1,0 +1,118 @@
+name: Deploy to Bluehost
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+    types: [ closed ]
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || (github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main')
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup Node.js (if needed for build tools)
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+      if: hashFiles('package.json') != ''
+
+    - name: Install Dependencies (if package.json exists)
+      run: npm ci
+      if: hashFiles('package.json') != ''
+
+    - name: Build Assets (if needed)
+      run: npm run build
+      if: hashFiles('package.json') != '' && hashFiles('package.json') contains 'build'
+
+    - name: Prepare Deployment Package
+      run: |
+        # Create deployment directory
+        mkdir -p deploy
+        
+        # Copy theme files
+        if [ -d "wp-content" ]; then
+          cp -r wp-content deploy/
+        fi
+        
+        # Copy any additional files (exclude sensitive files)
+        if [ -f "wp-config-production.php" ]; then
+          cp wp-config-production.php deploy/wp-config.php
+        fi
+        
+        # Create directory structure if needed
+        mkdir -p deploy/wp-content/themes
+        mkdir -p deploy/wp-content/uploads
+        mkdir -p deploy/wp-content/plugins
+        
+        # Set proper permissions in deployment package
+        find deploy -type d -exec chmod 755 {} \;
+        find deploy -type f -exec chmod 644 {} \;
+
+    - name: Deploy via FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ${{ secrets.FTP_HOST }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        protocol: ftps
+        port: 21
+        local-dir: ./deploy/
+        server-dir: /public_html/
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+          **/tests/**
+          **/*.log
+          **/wp-config-local.php
+          **/.env*
+          **/.DS_Store
+        dangerous-clean-slate: false
+        
+    - name: Deploy Theme Only (Alternative method)
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      if: failure()
+      with:
+        server: ${{ secrets.FTP_HOST }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        protocol: ftps
+        port: 21
+        local-dir: ./wp-content/themes/ai-portraits/
+        server-dir: /public_html/wp-content/themes/ai-portraits/
+        exclude: |
+          **/.git*
+          **/node_modules/**
+          **/*.log
+          **/.DS_Store
+
+    - name: Verify Deployment
+      run: |
+        echo "Deployment completed successfully!"
+        echo "Site URL: https://modeaiarts.com"
+        echo "Theme deployed to: /public_html/wp-content/themes/ai-portraits/"
+
+    - name: Notification on Success
+      if: success()
+      run: |
+        echo "✅ Deployment to modeaiarts.com completed successfully!"
+        echo "🎨 AI Portraits theme is now live"
+        
+    - name: Notification on Failure
+      if: failure()
+      run: |
+        echo "❌ Deployment failed. Please check the logs above."
+        echo "Common issues:"
+        echo "- Check FTP credentials in repository secrets"
+        echo "- Verify server path is correct"
+        echo "- Ensure Bluehost allows FTP connections"

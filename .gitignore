@@ -1,0 +1,85 @@
+# WordPress Core Files (exclude if not managing core)
+/wp-admin/
+/wp-includes/
+wp-*.php
+xmlrpc.php
+index.php
+
+# WordPress Configuration
+wp-config.php
+wp-config-local.php
+wp-config-production.php
+
+# Database
+*.sql
+*.sql.gz
+
+# Uploads and Media
+wp-content/uploads/
+
+# Cache and Temporary Files
+wp-content/cache/
+wp-content/backup*/
+wp-content/backups/
+wp-content/upgrade/
+wp-content/uploads/cache/
+
+# Plugins (exclude unless custom)
+wp-content/plugins/
+!wp-content/plugins/.gitkeep
+
+# WordPress Updates
+wp-content/upgrade/
+
+# Log Files
+*.log
+error_log
+access_log
+
+# Environment and Security
+.htaccess
+.env
+.env.local
+.env.production
+
+# System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+
+# IDE and Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node.js (if using build tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Composer (if using)
+vendor/
+composer.lock
+
+# Temporary Files
+tmp/
+temp/
+
+# Deployment Files
+deploy.log
+deployment-*.txt
+
+# Keep important directories but ignore content
+wp-content/uploads/.gitkeep
+wp-content/cache/.gitkeep
+
+# Claude Code Settings (keep local only)
+.claude/settings.local.json
