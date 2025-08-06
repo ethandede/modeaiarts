@@ -4,5 +4,4 @@ deployment:
     - export DEPLOYPATH=/home/ezfjslmy/public_html/website_678f6ace
     - /bin/mkdir -p $DEPLOYPATH/wp-content/themes
     - /bin/cp -R wp-content/themes/ai-portraits $DEPLOYPATH/wp-content/themes/
-    - /bin/find $DEPLOYPATH/wp-content/themes/ai-portraits -type f -exec chmod 644 {} \;
-    - /bin/find $DEPLOYPATH/wp-content/themes/ai-portraits -type d -exec chmod 755 {} \;
+    - /bin/chmod -R 755 $DEPLOYPATH/wp-content/themes/ai-portraits
