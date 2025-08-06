@@ -196,4 +196,4 @@ This project is proprietary. All rights reserved.
 
 ---
 
-**🎨 Ready to showcase beautiful AI-generated portraits with automatic deployment!**
+**🎨 Ready to showcase beautiful AI-generated portraits with automatic deployment!**🎨 Ready for deployment with FTP secrets!
