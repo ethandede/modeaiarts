@@ -56,7 +56,7 @@
                     <h3>Portrait Details</h3>
                     <div class="meta-grid">
                         
-                        <?php $style_description = get_post_meta(get_the_ID(), '_style_description', true); ?>
+                        <?php $style_description = get_portrait_field('style_description'); ?>
                         <?php if ($style_description) : ?>
                             <div class="meta-item">
                                 <span class="meta-label">Artistic Style:</span>
@@ -64,7 +64,7 @@
                             </div>
                         <?php endif; ?>
                         
-                        <?php $mood = get_post_meta(get_the_ID(), '_mood', true); ?>
+                        <?php $mood = get_portrait_field('mood'); ?>
                         <?php if ($mood) : ?>
                             <div class="meta-item">
                                 <span class="meta-label">Mood/Emotion:</span>
@@ -72,27 +72,82 @@
                             </div>
                         <?php endif; ?>
                         
-                        <?php $ai_model = get_post_meta(get_the_ID(), '_ai_model', true); ?>
+                        <?php $ai_model = get_portrait_field('ai_model'); ?>
                         <?php if ($ai_model) : ?>
                             <div class="meta-item">
                                 <span class="meta-label">AI Model:</span>
-                                <span class="meta-value"><?php echo esc_html($ai_model); ?></span>
+                                <span class="meta-value"><?php 
+                                    $model_labels = array(
+                                        'midjourney' => 'Midjourney',
+                                        'dalle3' => 'DALL-E 3',
+                                        'stable_diffusion' => 'Stable Diffusion',
+                                        'leonardo' => 'Leonardo AI',
+                                        'runway' => 'Runway ML',
+                                        'other' => 'Other'
+                                    );
+                                    echo esc_html(isset($model_labels[$ai_model]) ? $model_labels[$ai_model] : $ai_model); 
+                                ?></span>
                             </div>
                         <?php endif; ?>
                         
-                        <?php $generation_date = get_post_meta(get_the_ID(), '_generation_date', true); ?>
+                        <?php $generation_date = get_portrait_field('generation_date'); ?>
                         <?php if ($generation_date) : ?>
                             <div class="meta-item">
                                 <span class="meta-label">Generated:</span>
-                                <span class="meta-value"><?php echo esc_html(date('F j, Y', strtotime($generation_date))); ?></span>
+                                <span class="meta-value"><?php 
+                                    if (function_exists('get_field')) {
+                                        echo esc_html(date('F j, Y', strtotime($generation_date)));
+                                    } else {
+                                        echo esc_html(date('F j, Y', strtotime($generation_date)));
+                                    }
+                                ?></span>
                             </div>
                         <?php endif; ?>
                         
-                        <?php $technique = get_post_meta(get_the_ID(), '_technique', true); ?>
+                        <?php $technique = get_portrait_field('technique'); ?>
                         <?php if ($technique) : ?>
                             <div class="meta-item technique-full">
-                                <span class="meta-label">Technique/Parameters:</span>
-                                <span class="meta-value"><?php echo esc_html($technique); ?></span>
+                                <span class="meta-label">Techniques:</span>
+                                <span class="meta-value"><?php 
+                                    if (is_array($technique)) {
+                                        $technique_labels = array(
+                                            'digital_painting' => 'Digital Painting',
+                                            'photo_realistic' => 'Photo Realistic',
+                                            'oil_painting' => 'Oil Painting Style',
+                                            'watercolor' => 'Watercolor Style',
+                                            'pencil_sketch' => 'Pencil Sketch',
+                                            'abstract' => 'Abstract',
+                                            'surreal' => 'Surreal',
+                                            'minimalist' => 'Minimalist'
+                                        );
+                                        $techniques = array();
+                                        foreach ($technique as $tech) {
+                                            $techniques[] = isset($technique_labels[$tech]) ? $technique_labels[$tech] : $tech;
+                                        }
+                                        echo esc_html(implode(', ', $techniques));
+                                    } else {
+                                        echo esc_html($technique);
+                                    }
+                                ?></span>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <?php $prompt_text = get_portrait_field('prompt_text'); ?>
+                        <?php if ($prompt_text) : ?>
+                            <div class="meta-item technique-full">
+                                <span class="meta-label">AI Prompt:</span>
+                                <span class="meta-value"><?php echo esc_html($prompt_text); ?></span>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <?php $color_palette = get_portrait_field('color_palette'); ?>
+                        <?php if ($color_palette) : ?>
+                            <div class="meta-item">
+                                <span class="meta-label">Primary Color:</span>
+                                <span class="meta-value">
+                                    <span style="display: inline-block; width: 20px; height: 20px; background-color: <?php echo esc_attr($color_palette); ?>; border: 1px solid #ddd; vertical-align: middle; margin-right: 5px;"></span>
+                                    <?php echo esc_html($color_palette); ?>
+                                </span>
                             </div>
                         <?php endif; ?>
                         
@@ -125,7 +180,7 @@
                                     <h4 class="portrait-card-title"><?php the_title(); ?></h4>
                                     <div class="portrait-card-excerpt">
                                         <?php 
-                                        $style_description = get_post_meta(get_the_ID(), '_style_description', true);
+                                        $style_description = get_portrait_field('style_description', get_the_ID());
                                         if ($style_description) {
                                             echo esc_html(wp_trim_words($style_description, 10));
                                         }

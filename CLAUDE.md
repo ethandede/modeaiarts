@@ -1,100 +1,148 @@
-# CLAUDE.md
+# CLAUDE.md - AI Portraits WordPress Project
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides both **reusable development patterns** and **site-specific project details** for working with this WordPress project.
 
-## Project Overview
+## 📋 Documentation Structure
 
-This is a WordPress-based website for showcasing AI-generated portrait art with a focus on Google Ads eligibility. The site features a curated collection of beautiful AI-generated portraits with comprehensive navigation and substantive content.
+### 🔧 Reusable Infrastructure Patterns
+*Copy these to new WordPress projects*
 
-## WordPress Theme Structure
+1. **[Local by Flywheel Setup](docs/claude/01-local-flywheel-setup.md)**
+   - Auto-detection database script for any Local site
+   - WP-CLI integration with Local's PHP binary
+   - Standard directory structure and commands
 
-**Theme Location:** `wp-content/themes/ai-portraits/`
+2. **[ACF Pro JSON Sync](docs/claude/02-acf-json-sync.md)**
+   - Version-controlled custom fields setup
+   - Field group registration patterns
+   - Helper functions for field access
 
-### Key Theme Files
-- `functions.php` - Main theme functions, custom post type, and meta fields
-- `style.css` - Complete responsive styling for portrait gallery
-- `index.php` - Main homepage and archive template
-- `single-ai_portrait.php` - Individual portrait display with navigation
-- `js/navigation.js` - Keyboard/swipe navigation and interactive features
-- `inc/seo-analytics.php` - SEO optimization and Google Analytics integration
+3. **[GitHub → Bluehost Deployment](docs/claude/03-github-bluehost-deployment.md)**
+   - Safe deployment strategies using .cpanel.yml
+   - GitHub Actions integration
+   - Common hosting patterns and troubleshooting
 
-### Page Templates
-- `page-templates/about.php` - Comprehensive about page (Google Ads requirement)
-- `page-templates/privacy-policy.php` - Privacy policy (Google Ads requirement)
-- `page-templates/terms-of-service.php` - Terms of service (Google Ads requirement)
+4. **[WordPress Development Patterns](docs/claude/04-wordpress-patterns.md)**
+   - Custom post type templates
+   - Theme setup boilerplate
+   - SEO and navigation patterns
 
-## Custom Post Type
+### 🎨 AI Portraits Project Details
+*Specific to this project*
 
-**AI Portraits** (`ai_portrait`)
-- Custom fields: AI model, generation date, style description, mood, technique
-- Featured image support with multiple image sizes
-- SEO-optimized single page template
-- Prev/next navigation between portraits
+5. **[AI Portraits Project Specifics](docs/claude/ai-portraits-project.md)**
+   - Theme structure and custom post types
+   - ACF field groups and configuration
+   - Content strategy and SEO implementation
+   - Deployment paths and site-specific settings
 
-## Content Strategy for Google Ads
+## 🚀 Quick Start (This Project)
 
-### Required Pages (All Created)
-1. **About Page** - Detailed explanation of AI art and creative process (500+ words)
-2. **Privacy Policy** - Comprehensive privacy policy including Google Analytics
-3. **Terms of Service** - Complete terms covering AI-generated content
-4. **Blog Section** - Multiple substantial articles about AI art (400-600 words each)
+```bash
+# Test database connection
+./local-db.sh test
 
-### Blog Content Topics
-- The Evolution of AI Portrait Art
-- Understanding AI Art Generation Technology  
-- Ethics of AI-Generated Portraits
-- Additional posts available in `sample-blog-posts.php`
+# List AI portraits
+./local-db.sh wp post list --post_type=ai_portrait
 
-## SEO Features
+# Access site
+# http://modeaiarts.local
+```
 
-- Comprehensive meta tags and Open Graph integration
-- Google Analytics 4 integration
-- Structured data (Schema.org) for portraits and website
-- Custom XML sitemap generation
-- SEO-friendly URLs and breadcrumbs
-- Image optimization with multiple sizes
+## 🚀 Quick Start (New Project)
 
-## Navigation Features
+```bash
+# Copy infrastructure files
+cp local-db.sh /path/to/new-project/
+cp .cpanel.yml /path/to/new-project/
+cp -r docs/claude/ /path/to/new-project/docs/
 
-- **Keyboard Navigation:** Left/Right arrows, Escape key
-- **Touch/Swipe Support:** Mobile-friendly gesture navigation
-- **Related Portraits:** Random selection of 3 related artworks
-- **Gallery Grid:** Responsive masonry-style layout
+# Edit site-specific values
+# - Update .cpanel.yml paths
+# - Create new project-specific.md
+# - Configure ACF JSON directory
+```
 
-## Development Commands
+## 📁 Project Structure
 
-Since this is a WordPress theme, development involves:
+```
+modeaiarts/
+├── app/public/                         # Local WordPress root
+│   ├── wp-content/themes/
+│   │   └── ai-portraits/               # Custom theme
+│   │       ├── acf-json/               # Version controlled fields
+│   │       ├── inc/                    # PHP includes
+│   │       │   ├── acf-config.php      # ACF configuration
+│   │       │   └── seo-analytics.php   # SEO functions
+│   │       ├── js/navigation.js        # Portrait navigation
+│   │       ├── page-templates/         # About, Privacy, Terms
+│   │       ├── functions.php           # Main theme functions
+│   │       └── single-ai_portrait.php  # Portrait display template
+│   └── wp-config.php                   # Configured for Local socket
+├── docs/claude/                        # Documentation modules
+│   ├── 01-local-flywheel-setup.md      # 🔧 Reusable
+│   ├── 02-acf-json-sync.md             # 🔧 Reusable
+│   ├── 03-github-bluehost-deployment.md # 🔧 Reusable
+│   ├── 04-wordpress-patterns.md        # 🔧 Reusable
+│   └── ai-portraits-project.md         # 🎨 Site-specific
+├── .cpanel.yml                         # Deployment configuration
+└── local-db.sh                         # Database helper script
+```
 
-1. **Local WordPress Setup:** Use Local by Flywheel, XAMPP, or similar
-2. **Theme Activation:** Activate the "AI Portraits" theme in WordPress admin
-3. **Content Creation:** Add AI portraits using the custom post type
-4. **SEO Configuration:** Set Google Analytics ID in Settings > AI Portraits SEO
+## 🎯 Current Project Status
 
-## Google Ads Preparation Checklist
+### ✅ Infrastructure Complete
+- Local by Flywheel database access via `local-db.sh`
+- ACF Pro with JSON sync in `acf-json/`
+- GitHub deployment to Bluehost via `.cpanel.yml`
+- Custom AI Portraits post type with rich field groups
 
-- ✅ Substantive content (10+ pages with 300-500 words each)
-- ✅ Privacy Policy and Terms of Service
-- ✅ About page explaining the site's purpose
-- ✅ Regular blog content about AI art
-- ✅ Mobile-responsive design
-- ✅ Fast loading times with image optimization
-- ✅ SSL certificate support (WordPress standard)
-- ✅ Google Analytics integration
-- ✅ SEO optimization
+### ✅ Site Features
+- Responsive portrait gallery with masonry layout
+- Keyboard and touch navigation between portraits
+- SEO optimized with structured data
+- Google Ads compliant content pages
+- Related portraits and navigation
 
-## Theme Customization
+### 🔑 Key Commands
 
-To modify the theme:
-- **Colors/Styling:** Edit `style.css`
-- **Layout Changes:** Modify template files
-- **Functionality:** Add to `functions.php` or create new includes
-- **Navigation:** Customize `js/navigation.js`
+```bash
+# Database operations
+./local-db.sh wp user list
+./local-db.sh wp post list --post_type=ai_portrait
+./local-db.sh mysql
+./local-db.sh export backup.sql
 
-## Content Management
+# Content management
+./local-db.sh wp post create --post_type=ai_portrait --post_title="Portrait Name" --post_status=publish
 
-1. **Adding Portraits:** Use WordPress admin > AI Portraits > Add New
-2. **Fill Metadata:** Complete all custom fields for SEO benefits
-3. **Featured Images:** Upload high-quality portrait images
-4. **Blog Posts:** Create regular content using provided examples
+# ACF field updates
+./local-db.sh wp acf update_field field_ai_model "midjourney" <post_id>
+```
 
-This theme provides a complete foundation for a Google Ads-eligible AI portrait gallery with comprehensive SEO and user experience features.
+## 📝 Development Workflow
+
+### For This Project
+1. Read **ai-portraits-project.md** for site-specific details
+2. Use `local-db.sh` for database operations
+3. Modify ACF fields in admin (auto-syncs to JSON)
+4. Test at `http://modeaiarts.local`
+5. Commit changes including `acf-json/`
+6. Push to GitHub for automatic deployment
+
+### For New Projects
+1. Copy infrastructure files and docs
+2. Replace site-specific values in templates
+3. Create new project-specific documentation
+4. Follow reusable patterns in docs/claude/01-04
+
+## 🎨 AI Portraits Theme Details
+
+- **Custom Post Type:** `ai_portrait`
+- **Database Socket:** `/Users/edede/Library/Application Support/Local/run/18tcPIiBl/mysql/mysqld.sock`
+- **Deployment Path:** `/home/ezfjslmy/public_html/website_678f6ace`
+- **Local URL:** `http://modeaiarts.local`
+
+---
+
+*This documentation serves both as a working reference for the AI Portraits project and a template for future WordPress projects.*

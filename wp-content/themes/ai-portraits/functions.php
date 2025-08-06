@@ -54,88 +54,12 @@ function register_ai_portrait_post_type() {
         'hierarchical' => false,
         'menu_position' => 5,
         'menu_icon' => 'dashicons-format-image',
-        'supports' => array('title', 'editor', 'thumbnail', 'custom-fields'),
+        'supports' => array('title', 'editor', 'thumbnail'),
         'show_in_rest' => true
     );
     register_post_type('ai_portrait', $args);
 }
 add_action('init', 'register_ai_portrait_post_type');
-
-// Add custom fields for AI Portrait metadata
-function add_ai_portrait_meta_boxes() {
-    add_meta_box(
-        'ai_portrait_details',
-        'AI Portrait Details',
-        'ai_portrait_details_callback',
-        'ai_portrait',
-        'normal',
-        'high'
-    );
-}
-add_action('add_meta_boxes', 'add_ai_portrait_meta_boxes');
-
-function ai_portrait_details_callback($post) {
-    wp_nonce_field('ai_portrait_meta_nonce', 'ai_portrait_meta_nonce_field');
-    
-    $ai_model = get_post_meta($post->ID, '_ai_model', true);
-    $generation_date = get_post_meta($post->ID, '_generation_date', true);
-    $style_description = get_post_meta($post->ID, '_style_description', true);
-    $mood = get_post_meta($post->ID, '_mood', true);
-    $technique = get_post_meta($post->ID, '_technique', true);
-    ?>
-    <table class="form-table">
-        <tr>
-            <th><label for="ai_model">AI Model Used</label></th>
-            <td><input type="text" id="ai_model" name="ai_model" value="<?php echo esc_attr($ai_model); ?>" class="regular-text" /></td>
-        </tr>
-        <tr>
-            <th><label for="generation_date">Generation Date</label></th>
-            <td><input type="date" id="generation_date" name="generation_date" value="<?php echo esc_attr($generation_date); ?>" /></td>
-        </tr>
-        <tr>
-            <th><label for="style_description">Style Description</label></th>
-            <td><textarea id="style_description" name="style_description" rows="3" class="large-text"><?php echo esc_textarea($style_description); ?></textarea></td>
-        </tr>
-        <tr>
-            <th><label for="mood">Mood/Emotion</label></th>
-            <td><input type="text" id="mood" name="mood" value="<?php echo esc_attr($mood); ?>" class="regular-text" /></td>
-        </tr>
-        <tr>
-            <th><label for="technique">AI Technique/Parameters</label></th>
-            <td><textarea id="technique" name="technique" rows="2" class="large-text"><?php echo esc_textarea($technique); ?></textarea></td>
-        </tr>
-    </table>
-    <?php
-}
-
-// Save custom fields
-function save_ai_portrait_meta($post_id) {
-    if (!isset($_POST['ai_portrait_meta_nonce_field']) || !wp_verify_nonce($_POST['ai_portrait_meta_nonce_field'], 'ai_portrait_meta_nonce')) {
-        return;
-    }
-    
-    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-        return;
-    }
-    
-    if (isset($_POST['post_type']) && 'ai_portrait' == $_POST['post_type']) {
-        if (!current_user_can('edit_page', $post_id)) {
-            return;
-        }
-    } else {
-        if (!current_user_can('edit_post', $post_id)) {
-            return;
-        }
-    }
-    
-    $fields = array('ai_model', 'generation_date', 'style_description', 'mood', 'technique');
-    foreach ($fields as $field) {
-        if (isset($_POST[$field])) {
-            update_post_meta($post_id, '_' . $field, sanitize_text_field($_POST[$field]));
-        }
-    }
-}
-add_action('save_post', 'save_ai_portrait_meta');
 
 // Custom navigation functions
 function get_adjacent_portrait($next = true) {
@@ -183,8 +107,8 @@ add_action('init', 'ai_portraits_menus');
 function ai_portraits_seo_meta() {
     if (is_singular('ai_portrait')) {
         global $post;
-        $description = get_post_meta($post->ID, '_style_description', true);
-        $mood = get_post_meta($post->ID, '_mood', true);
+        $description = get_portrait_field('style_description', $post->ID);
+        $mood = get_portrait_field('mood', $post->ID);
         
         if ($description || $mood) {
             $meta_description = $description . ' ' . $mood;
@@ -196,4 +120,22 @@ add_action('wp_head', 'ai_portraits_seo_meta');
 
 // Include SEO and Analytics functions
 require_once get_template_directory() . '/inc/seo-analytics.php';
+
+// Include ACF Configuration
+require_once get_template_directory() . '/inc/acf-config.php';
+
+/**
+ * Get ACF portrait field value
+ */
+function get_portrait_field($field_name, $post_id = null) {
+    if (!$post_id) {
+        $post_id = get_the_ID();
+    }
+    
+    if (function_exists('get_field')) {
+        return get_field($field_name, $post_id);
+    }
+    
+    return '';
+}
 ?>
