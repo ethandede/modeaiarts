@@ -2,7 +2,7 @@
 deployment:
   tasks:
     # Set deployment path to your account's public_html directory
-    - export DEPLOYPATH=/home/ezfjslmy/public_html/
+    - export DEPLOYPATH=/home/ezfjslmy/public_html/website_678f6ace/
     
     # Deploy WordPress theme files
     - /bin/cp -R wp-content/themes/ai-portraits $DEPLOYPATH/wp-content/themes/
