@@ -1,25 +1,8 @@
 ---
 deployment:
   tasks:
-    # Set deployment path to your account's public_html directory
-    - export DEPLOYPATH=/home/ezfjslmy/public_html/website_678f6ace/
-    
-    # Deploy WordPress theme files
+    - export DEPLOYPATH=/home/ezfjslmy/public_html/website_678f6ace
+    - /bin/mkdir -p $DEPLOYPATH/wp-content/themes
     - /bin/cp -R wp-content/themes/ai-portraits $DEPLOYPATH/wp-content/themes/
-    
-    # Deploy production configuration (rename to wp-config.php)
-    - /bin/cp wp-config-production.php $DEPLOYPATH/wp-config.php
-    
-    # Deploy .htaccess configuration (rename from .htaccess-production)
-    - /bin/cp .htaccess-production $DEPLOYPATH/.htaccess
-    
-    # Set proper file permissions
     - /bin/find $DEPLOYPATH/wp-content/themes/ai-portraits -type f -exec chmod 644 {} \;
     - /bin/find $DEPLOYPATH/wp-content/themes/ai-portraits -type d -exec chmod 755 {} \;
-    
-    # Create uploads directory if it doesn't exist
-    - /bin/mkdir -p $DEPLOYPATH/wp-content/uploads
-    - /bin/chmod 755 $DEPLOYPATH/wp-content/uploads
-    
-    # Ensure JavaScript files are executable
-    - /bin/chmod 644 $DEPLOYPATH/wp-content/themes/ai-portraits/js/navigation.js
