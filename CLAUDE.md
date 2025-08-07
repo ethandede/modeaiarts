@@ -94,8 +94,9 @@ modeaiarts/
 ### ✅ Infrastructure Complete
 - Local by Flywheel database access via `local-db.sh`
 - ACF Pro with JSON sync in `acf-json/`
-- GitHub deployment to Bluehost via `.cpanel.yml`
+- GitHub Actions SSH deployment to Bluehost (automated & reliable)
 - Custom AI Portraits post type with rich field groups
+- **Live Site:** `http://website-ee9ed2f3.ezf.jsl.mybluehost.me/`
 
 ### ✅ Site Features
 - Responsive portrait gallery with masonry layout
