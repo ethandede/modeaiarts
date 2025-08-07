@@ -1,7 +1,9 @@
 ---
+# Legacy cPanel Git deployment (replaced by GitHub Actions SSH)
+# New deployment uses: .github/workflows/deploy-to-bluehost.yml
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/ezfjslmy/public_html/website_678f6ace
+    - export DEPLOYPATH=/home4/ezfjslmy/public_html/website_ee9ed2f3
     - /bin/mkdir -p $DEPLOYPATH/wp-content/themes
     - /bin/cp -R wp-content/themes/ai-portraits $DEPLOYPATH/wp-content/themes/
     - /bin/chmod -R 755 $DEPLOYPATH/wp-content/themes/ai-portraits

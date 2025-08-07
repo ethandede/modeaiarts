@@ -1,0 +1,53 @@
+name: Deploy to Bluehost via SSH
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy AI Portraits Theme
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup SSH
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.BLUEHOST_SSH_PRIVATE_KEY }}
+
+    - name: Add server to known_hosts
+      run: |
+        ssh-keyscan -H ${{ secrets.BLUEHOST_HOST }} >> ~/.ssh/known_hosts
+
+    - name: Deploy theme and docs via rsync
+      run: |
+        rsync -avz --delete-after \
+          --include='wp-content/***' \
+          --include='docs/***' \
+          --include='*.md' \
+          --include='.github/***' \
+          --exclude='app/***' \
+          --exclude='conf/***' \
+          --exclude='logs/***' \
+          --exclude='local-db.sh' \
+          --exclude='*.sql' \
+          --exclude='*.tar.gz' \
+          --exclude='.DS_Store' \
+          ./ ${{ secrets.BLUEHOST_USERNAME }}@${{ secrets.BLUEHOST_HOST }}:${{ secrets.BLUEHOST_PATH }}/
+
+    - name: Set proper file permissions
+      run: |
+        ssh ${{ secrets.BLUEHOST_USERNAME }}@${{ secrets.BLUEHOST_HOST }} "
+          find ${{ secrets.BLUEHOST_PATH }}/wp-content/themes/ai-portraits -type d -exec chmod 755 {} \; 2>/dev/null || true
+          find ${{ secrets.BLUEHOST_PATH }}/wp-content/themes/ai-portraits -type f -exec chmod 644 {} \; 2>/dev/null || true
+        "
+
+    - name: Deployment complete
+      run: |
+        echo "🚀 Deployment to Bluehost complete!"
+        echo "📍 Site: http://website-ee9ed2f3.ezf.jsl.mybluehost.me/"
+        echo "📁 Path: ${{ secrets.BLUEHOST_PATH }}"

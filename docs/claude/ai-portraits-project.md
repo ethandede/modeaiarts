@@ -60,20 +60,17 @@ WordPress-based website for showcasing AI-generated portrait art with Google Ads
 ## Deployment Configuration
 
 ### Bluehost Specific
-- **cPanel Username:** `ezfjslmy`
-- **Deployment Path:** `/home/ezfjslmy/public_html/website_678f6ace`
-- **Git Repository:** Connected to GitHub for automatic deployment
-- **Deployment Strategy:** Theme files only (safe deployment)
+- **cPanel Username:** `ezfjslmy` 
+- **Server:** `home4` (Bluehost server designation)
+- **SSH IP:** `50.87.169.177`
+- **Live Domain:** `http://website-ee9ed2f3.ezf.jsl.mybluehost.me/`
+- **Deployment Path:** `/home4/ezfjslmy/public_html/website_ee9ed2f3`
+- **Deployment Strategy:** GitHub Actions with SSH (clean file deployment)
 
-### Current .cpanel.yml
-```yaml
-deployment:
-  tasks:
-    - export DEPLOYPATH=/home/ezfjslmy/public_html/website_678f6ace
-    - /bin/mkdir -p $DEPLOYPATH/wp-content/themes
-    - /bin/cp -R wp-content/themes/ai-portraits $DEPLOYPATH/wp-content/themes/
-    - /bin/chmod -R 755 $DEPLOYPATH/wp-content/themes/ai-portraits
-```
+### Site Migration Method Used
+- **Duplicator Pro** package migration from Local by Flywheel
+- **Complete site transfer** including database, ACF Pro fields, and theme
+- **Important:** Archive filename must keep original hash for installer to work
 
 ## Navigation Features
 
