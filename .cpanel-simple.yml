@@ -1,4 +1,0 @@
----
-deployment:
-  tasks:
-    - /bin/cp -R wp-content/themes/ai-portraits /home/ezfjslmy/public_html/website_678f6ace/wp-content/themes/
